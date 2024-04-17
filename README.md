@@ -88,7 +88,8 @@ matchit pid namesite using endline_70.dta , idu(pid) txtu(namesite) t(.7)
 
 The final step will be a simple append routine to get a composite project data with the bits of data tied back together. A downside is that you will end up generating quite a number of sub data files depending on the match levels you iterate. 
 
-Note that Matchit is a routine that can be deployed for a number of data consolidation and cleaning tasks. It is worth checking some more of what Matchit can do here:
+>[!Note]
+> Matchit is a routine that can be deployed for a number of data consolidation and cleaning tasks. It is worth checking some more of what Matchit can do here:
  https://www.stata.com/meeting/switzerland16/slides/raffo-switzerland16.pdf. 
 
 Some of the highlights are that with cleaner datasets, you can use Matchit’s powerful inbuilt weights option to penalize some of the text that is more frequent by giving lower scores. Text that is less frequent is then given higher scores meaning that the routine is guided to produce better similarity accuracies. Another useful option that accords faster computational speed (particularly in large datasets) removes redundant information and reduces the size and depth of index. This option works optimally if you have spent some time to clean the variables of interest as much as you can.
