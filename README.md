@@ -1,3 +1,5 @@
+![CC Graphics 2024_TheMatchitRoutine](https://github.com/csae-coders-corner/How-to-merge-datasets-using-the-Matchit-routine/assets/148211163/bee01ea8-7392-4b1f-aecd-d487968186d5)
+
 # How-to-merge-datasets-using-the-Matchit-routine
 Suppose you set out to conduct your study; this time a randomised experiment with two waves of data collection, baseline and endline. However, you face a common data challenge where the unique identifiers in the baseline are erroneously missing or wrongly captured such that no successful merging is possible. Luckily, you had the names of your subjects captured in two variables as “surname” and “firstname”. 
 
