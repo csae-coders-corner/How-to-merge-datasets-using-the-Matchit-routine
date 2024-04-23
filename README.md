@@ -17,6 +17,7 @@ Each dataset has the subject names under “surname” and “firstname” varia
 
 1. You will need first to concatenate the two names to create on variable such that, if the surname is John and the first name is Doe, the new variable has JohnDoe. 
 
+```
 *baseline
 use baseline, clear
 egen namesite = concat(firstname surname)
@@ -24,14 +25,15 @@ egen namesite = concat(firstname surname)
 *endline
 use endline, clear
 egen namesite = concat(firstname surname)
-
+```
 
 2. With irregular pids in both datasets, you are set to attempt a fuzzy merge. This routine tries to match text and then generate a similarity score such that 0≤similscore≤1. A similarity score of 1 implies a perfect match between texts found in both the datasets. We can proceed as follows.
 
+```
 *Matchit routine
 use baseline, clear
 matchit pid namesite using endline.dta , idu(pid) txtu(namesite)
-
+```
 
 3. You can now get a sub-dataset of perfect matches (similscore == 1) and save that as a separate dataset. Note that all this code has done is create a similarity score variable based on the imperfect pid and namesite variables, then patched the two variables into your master dataset (baseline). 
 
@@ -39,22 +41,24 @@ If you just wanted to get a final dataset of perfect matches only (i.e. similsco
 
 *Now keep Exact score (similscore == 1) as separate dataset
 
-
+```
 gsort -similscore // here we arrange the similscores in descending order 
 
 drop if pid == pid[_n] & similscore != 1 // note that we want to remain with observations that uniquely matched and with a similarity score of 1.
 save exactmatch_baseline, replace
-
+```
 
 4. Next, we merge the bridge set of exact matches back to the baseline file.
 
+```
 merge 1:1 pid namesite using baseline
 drop _merge
 save baseline_1, replace
-
+```
 
 5. We have to repeat the same process for the endline data.
 
+```
 *Repeating with the endline data
 
 use endline, clear
@@ -66,10 +70,11 @@ save exactmatch_endline, replace
 merge 1:1 pid namesite using endline
 drop _merge
 save endline_1, replace
-
+```
 
 6. The last step is to now merge the two sets of perfect matches (baseline_1 and endline_1)
 
+```
 use baseline_1, clear
 keep if similscore == 1
 gsort namesite 
@@ -83,10 +88,11 @@ merge 1:1 namesite using baseline_final
 drop _merge
 
 save final_data, replace
+```
 
 The most interesting part is that the matchit algorithm gives you scores of matches that are less than 1. Indeed, a normal merge could give you the final_data achieved above. Instead, one can first eliminate the observations that match 100% in both datasets thereby remaining with datasets that do not match perfectly. Here, you can choose what levels of match are more sensible to try given that each observation in the master dataset is essentially iterated through every observation in the using dataset to generate a match. That means, one observation can have several matches even though the largest score is essentially more plausible as a good match. To fix the match at some probability score, assume you want matches that are greater than or equal to 0.7 in similarity scores. The code to attain this is;
 
-matchit pid namesite using endline_70.dta , idu(pid) txtu(namesite) t(.7)
+`matchit pid namesite using endline_70.dta , idu(pid) txtu(namesite) t(.7)`
 
 The final step will be a simple append routine to get a composite project data with the bits of data tied back together. A downside is that you will end up generating quite a number of sub data files depending on the match levels you iterate. 
 
